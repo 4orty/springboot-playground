@@ -2,4 +2,19 @@ management:
   endpoints:
     web:
       exposure:
-        include: prometheus
+        include: '*'
+resilience4j:
+  circuitbreaker:
+    instances:
+      backendA:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 5
+        failureRateThreshold: 80
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 10000
+      backendB:
+        slidingWindowType: TIME_BASED
+        slidingWindowSize: 50
+        failureRateThreshold: 80
+        waitDurationInOpenState: 10000
+        minimumNumberOfCalls: 10
