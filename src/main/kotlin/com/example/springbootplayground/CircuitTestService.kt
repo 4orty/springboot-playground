@@ -10,6 +10,7 @@ class CircuitTestService(val testRestTemplate: RestTemplate) {
 
     @CircuitBreaker(name="backendA", fallbackMethod = "fallback")
     fun countSuccess(): String {
+        val networkTest = "test"
         return "countSuccess"
     }
 
