@@ -12,4 +12,5 @@ class RestTemplateConfig {
     fun testRestTemplate(builder: RestTemplateBuilder): RestTemplate {
         return builder.build()
     }
+    // 여기서 딱 이것만보고 resttemplate 주입 어떻게 받는지 알아야지. 그래야 원리를 알고 있다는 것.
 }

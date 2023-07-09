@@ -8,6 +8,11 @@ class SpringbootPlaygroundApplicationTests {
 
     @Test
     fun contextLoads() {
+        println("test")
     }
 
+    @Test
+    fun test() {
+        println("Test")
+    }
 }

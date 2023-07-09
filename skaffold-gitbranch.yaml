@@ -1,0 +1,40 @@
+apiVersion: skaffold/v2beta5
+kind: Config
+build:
+  tagPolicy:
+    envTemplate:
+      template: "{{.GIT_BRANCH}}"
+  artifacts:
+    - image: huburl/group/springboot-playground
+      context: .
+      jib:
+        project: springboot-playground
+
+deploy:
+  # skaffold는 결국 helm 명령어를 호출하는데, 그 명령어를 만드는 과정.
+  # 이 케이스를 해석해보면 deploy 할 때 helm을 이용할 것이고, 그 중에 upgrade 명령어를 사용할건데, install 옵션을 포함한다.
+  helm:
+    flags:
+      upgrade:
+        - --install
+    releases:
+      # release쪽 아래 옵션에 대해서는 조금 더 봐야할듯.
+      - name: "springboot-playground-{{.GIT_BRANCH}}"
+        chartPath: helm
+        namespace: sre-portal
+        artifactOverrides:
+          image: hubrul/group/springboot-playground
+        # helm chart안에서 사용되는 변수네.
+        setValueTemplates:
+          host: host정보
+          path: "/{{.GIT_BRANCH}}"
+          testContainer: true
+          # jvm 옵션같은데 이 부분은 뭘까?
+          # -X, -D 두 개 의미가 있었던 것 같은데 뭐였지? 둘 다 jvm 관련 옵션이긴 할 듯.
+          # proxyHost, nonProxyHost
+          app.options: >
+            -Xms2G -Xmx2G -Duser.timezone=Asia/Seoul -Dspring.profiles.active=dev
+            -Dhttp.proxyHost=proxy.test.com -Dhttp.proxyPort=80
+            -Dhttps.proxyHost=proxy.test.com -Dhttps.proxyPort=80
+            -Dhttp.nonProxyHosts=localhost|127.0.0.1|127.0.0.0/8|192.168.0.0/16|10.0.0.0/8|172.16.0.0/12|*.kakaopay.com|*.test.com|*.ap-northeast-2.vpce.amazonaws.com
+            -Dhttps.nonProxyHosts=localhost|127.0.0.1|127.0.0.0/8|192.168.0.0/16|10.0.0.0/8|172.16.0.0/12|*.kakaopay.com|*.test.com|*.ap-northeast-2.vpce.amazonaws.com

@@ -1,0 +1,13 @@
+apiVersion: skaffold/v2beta5
+kind: Config
+build:
+  artifacts:
+    - image: idock.daumkakao.io/kp-sre/springboot-playground
+deploy:
+  helm:
+    releases:
+      - name: springboot-playground
+        chartPath: helm/springboot-playground
+        namespace: test
+        artifactOverrides:
+          image: idock.daumkakao.io/kp-sre/springboot-playground
